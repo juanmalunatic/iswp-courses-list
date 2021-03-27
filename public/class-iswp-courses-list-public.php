@@ -107,9 +107,51 @@ class Iswp_Courses_List_Public {
 
     public function iswp_courses_list_render()
     {
+        $this->get_courses();
         ob_start();
         include 'partials/iswp-courses-list-public-display.php';
         return ob_get_clean();
+    }
+
+    public function get_courses()
+    {
+        $options = get_option('iswp_cl__oname__general_settings');
+        $course_ids = explode(', ', $options['course_ids']);
+
+        // Get the posts
+        $query = new WP_Query([
+            //'post_type' => 'sfwd-courses', // Somehow misses one when active
+            'post__in'  => $course_ids,
+        ]);
+        $posts = $query->posts;
+
+        // May need to create extra fields on the "post" to input the data missing here.
+
+        // ----------------------------------------
+        // Get the extra data
+        // ----------------------------------------
+
+        // Get course description (content? courses are empty atm)
+        // Get course (post) thumbnail
+
+        // ----------------------------------------
+        // Get the completion ("0 out of N points")
+        // ----------------------------------------
+
+        // Filter functions
+
+        // ----------------------------------------
+        // Process language out of the title
+        // ----------------------------------------
+
+        // ----------------------------------------
+        // Get the post category (course type?)
+        // ----------------------------------------
+
+
+
+
+        $b = "c";
     }
 
 }
