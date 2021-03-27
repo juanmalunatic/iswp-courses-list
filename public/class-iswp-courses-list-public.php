@@ -100,4 +100,16 @@ class Iswp_Courses_List_Public {
 
 	}
 
+    public function iswpcl_register_shortcodes()
+    {
+        add_shortcode('iswp_courses_list', [$this, 'iswp_courses_list_render']);
+    }
+
+    public function iswp_courses_list_render()
+    {
+        ob_start();
+        include 'partials/iswp-courses-list-public-display.php';
+        return ob_get_clean();
+    }
+
 }

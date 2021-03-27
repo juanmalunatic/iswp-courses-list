@@ -13,7 +13,7 @@
  * @package           Iswp_Courses_List
  *
  * @wordpress-plugin
- * Plugin Name:       iswp-courses-list
+ * Plugin Name:       ISWP Courses List
  * Plugin URI:        https://jmlunalopez.com
  * Description:       Display a custom list of LearnDash courses with an advanced UI.
  * Version:           1.0.0

@@ -100,4 +100,20 @@ class Iswp_Courses_List_Admin {
 
 	}
 
+	public function add_link_in_appearance_menu()
+    {
+        add_management_page(
+            'ISWP Courses List',
+            'ISWP Courses List',
+            'manage_options',
+            $this->plugin_name,
+            array($this, 'display_iswpcourseslist_admin_page')
+        );
+    }
+
+    public function display_iswpcourseslist_admin_page()
+    {
+        include_once('partials/iswp-courses-list-admin-display.php');
+    }
+
 }
