@@ -157,8 +157,11 @@ class Iswp_Courses_List {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		// Create link
+		// Create link in menu to access the plugin page
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_link_in_appearance_menu');
+
+        // Save the plugin's page data
+        $this->loader->add_action('admin_init', $plugin_admin, 'options_update');
 
 	}
 

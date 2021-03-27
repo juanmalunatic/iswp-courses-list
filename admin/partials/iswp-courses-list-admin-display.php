@@ -11,6 +11,9 @@
  * @package    Iswp_Courses_List
  * @subpackage Iswp_Courses_List/admin/partials
  */
+
+$option_name = 'iswp_cl__oname__general_settings';
+$options = get_option("iswp_cl__oname__general_settings");
 ?>
 
 <div class="wrap">
@@ -23,6 +26,11 @@
     <div id="form_area">
         <div id="main-form">
             <form id="form-container" method="post" action="options.php">
+
+                <?php
+                settings_fields("iswp_cl__ogroup__general_settings");
+                ?>
+
                 <div>
                     <h2>
                         Courses List Options
@@ -45,14 +53,18 @@
                         </tr>
                         <tr>
                             <th>
-                                <label for="course_ids">
+                                <label for="<?=$option_name?>[course_ids]">
                                     Course IDs
                                 </label>
                             </th>
                             <td>
-                                <textarea id="course_ids" rows="5" cols="90" style="width:90%">
 
-                                </textarea>
+                                <textarea
+                                        name="<?=$option_name?>[course_ids]"
+                                        id  ="<?=$option_name?>[course_ids]"
+                                        rows="5" cols="90" style="width:90%"
+                                ><?=$options['course_ids']?></textarea>
+
                                 <br >
                                 <span class="input_info">
                                     Input the IDs of the courses you want to display in the widget, separated by a comma.
