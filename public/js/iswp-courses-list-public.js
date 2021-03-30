@@ -17,10 +17,13 @@ function iswpCoursesListSetup() {
 	initializeCategories(courses);
 	initializeLanguages(courses);
 
+	// Trigger the initial draw
+	redrawCards(courses);
+
 }
 
 function initializeCategories (courses) {
-	let categories = ['Any category'];
+	let categories = ['All categories'];
 	console.log(categories);
 
 	categories = categories.concat(extractCategories(courses));
@@ -40,7 +43,7 @@ function initializeCategories (courses) {
 }
 
 function initializeLanguages (courses) {
-	let languages = ['Any language'];
+	let languages = ['All languages'];
 	languages = languages.concat(extractLanguages(courses));
 
 	let selector = document.getElementById('iswpcl-selector-language');
@@ -76,7 +79,7 @@ function createCard(card_data) {
 	const renderedCard = renderCard(card_data);
 
 	let newDiv = document.createElement('div');
-	newDiv.className = 'iswpcl_card';
+	newDiv.className = 'iswpcl_card_holder';
 	newDiv.innerHTML = renderedCard;
 
 	return newDiv;
@@ -85,17 +88,26 @@ function createCard(card_data) {
 function renderCard(card_data) {
 
 	const title = card_data['title'];
-
-	const description =
-		card_data['description']
-			? `<div class="description">${card_data['description']}</div>`
-			: '';
+	const description =	card_data['description'] ? card_data['description'] : '';
+	const course_url = card_data['link'];
+	const image_url = `url(${card_data['image']}`;
 
 	const template = `
-		<div>
-			<strong>${title}</strong>
-		</div>
-		${description}
+	<div class="iswpcl_card">
+		<a class="iswpcl_card_link" href="${course_url}">
+			<div class="iswpcl_card_image"
+				 style="background-image: ${image_url }) ">	
+			</div>
+			<div class="iswpcl_card_texts">
+				<div class="iswpcl_card_title">
+					${title}
+				</div>
+				<div class="iswpcl_card_description">
+					${description}
+				</div>
+			</div>		
+		</a>
+	</div>
 	`;
 
 	return template;
@@ -113,14 +125,14 @@ function filterCourses (courses) {
 	let courses_filtered = courses;
 
 	// First, filter by language
-	if (filter_language !== 'Any language') {
+	if (filter_language !== 'All languages') {
 		courses_filtered = courses_filtered.filter(
 			item => item.language === filter_language
 		);
 	}
 
 	// Then, filter by category
-	if (filter_category !== 'Any category') {
+	if (filter_category !== 'All categories') {
 		courses_filtered = courses_filtered.filter(
 			item => item.categories.includes(filter_category)
 		)
