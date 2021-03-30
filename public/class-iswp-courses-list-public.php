@@ -107,13 +107,25 @@ class Iswp_Courses_List_Public {
 
     public function iswp_courses_list_render()
     {
-        $this->get_courses();
+        // To avoid multiple network calls, this plugin is output as a single chunk of text
         ob_start();
+
+        // First, the HTML + CSS structure is output.
         include 'partials/iswp-courses-list-public-display.php';
+
+        // Then, the JSON payload is output
+        $json_data = $this->get_courses_list();
+        echo "<script>window.iswpcl_json = {$json_data}</script>";
+
+        // Finally, the JS is output
+        echo "<script>";
+        include "js/iswp-courses-list-public.js";
+        echo "</script>";
+
         return ob_get_clean();
     }
 
-    public function get_courses()
+    public function get_courses_list()
     {
 
         $plugin_public_dir = plugin_dir_url( __FILE__ );
@@ -130,13 +142,13 @@ class Iswp_Courses_List_Public {
             $result_array[] = (int) $each_number;
         }
 
-
         // Get the posts
         $query = new WP_Query([
             'post_type' => 'sfwd-courses',
             'posts_per_page' => 18,
             'post__in'  => $result_array,
-            'suppress_filters' => false
+            'orderby' => 'post_name__in', // Keep the given order
+            'suppress_filters' => false,
         ]);
         $posts = $query->posts;
 
@@ -149,7 +161,9 @@ class Iswp_Courses_List_Public {
         $data_all = [];
         foreach ($posts as $post) {
 
-            $data_post['id'] = $post->ID;
+            $data_post['id']     = $post->ID;
+            $data_post['title']  = $post->post_title;
+            $data_post['link']   = get_permalink($post->ID);
 
             // Language & Category: Course Tags contain the language; Course Category the category.
             $taxonomy_terms = wp_get_object_terms($post->ID, ['ld_course_tag', 'ld_course_category']);
@@ -165,7 +179,7 @@ class Iswp_Courses_List_Public {
                     $is_lang_tag = strpos($taxonomy_term->name, $lang_delimiter);
                     if ($is_lang_tag !== false) {
                         $tmparr = explode($lang_delimiter, $taxonomy_term->name);
-                        $language = end($tmparr);
+                        $language = ucfirst(end($tmparr));
                     }
                 }
 
@@ -175,11 +189,11 @@ class Iswp_Courses_List_Public {
                 }
             }
 
-            $data_post['category'] = $categories;
+            $data_post['categories'] = $categories;
 
             $data_post['language'] = $language;
             if ($data_post['language'] === false) {
-                $data_post['language'] = "english";
+                $data_post['language'] = false;
             }
 
             // Description: _sfwd-courses contains the description
@@ -198,6 +212,8 @@ class Iswp_Courses_List_Public {
 
             $data_all[] = $data_post;
         }
+
+        return json_encode($data_all);
     }
 
 }
