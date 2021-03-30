@@ -115,43 +115,89 @@ class Iswp_Courses_List_Public {
 
     public function get_courses()
     {
+
+        $plugin_public_dir = plugin_dir_url( __FILE__ );
+
+        // --------------------------------------------------------------------
+        // Retrieve the posts using WP Query
+        // --------------------------------------------------------------------
+
         $options = get_option('iswp_cl__oname__general_settings');
         $course_ids = explode(', ', $options['course_ids']);
 
+        $result_array = [];
+        foreach ($course_ids as $each_number) {
+            $result_array[] = (int) $each_number;
+        }
+
+
         // Get the posts
         $query = new WP_Query([
-            //'post_type' => 'sfwd-courses', // Somehow misses one when active
-            'post__in'  => $course_ids,
+            'post_type' => 'sfwd-courses',
+            'posts_per_page' => 18,
+            'post__in'  => $result_array,
+            'suppress_filters' => false
         ]);
         $posts = $query->posts;
 
-        // May need to create extra fields on the "post" to input the data missing here.
+        // --------------------------------------------------------------------
+        // Retrieve the card data for every course
+        // --------------------------------------------------------------------
 
-        // ----------------------------------------
-        // Get the extra data
-        // ----------------------------------------
+        // This data is used to construct a JSON array
 
-        // Get course description (content? courses are empty atm)
-        // Get course (post) thumbnail
+        $data_all = [];
+        foreach ($posts as $post) {
 
-        // ----------------------------------------
-        // Get the completion ("0 out of N points")
-        // ----------------------------------------
+            $data_post['id'] = $post->ID;
 
-        // Filter functions
+            // Language & Category: Course Tags contain the language; Course Category the category.
+            $taxonomy_terms = wp_get_object_terms($post->ID, ['ld_course_tag', 'ld_course_category']);
 
-        // ----------------------------------------
-        // Process language out of the title
-        // ----------------------------------------
+            $language   = false;
+            $categories = [];
 
-        // ----------------------------------------
-        // Get the post category (course type?)
-        // ----------------------------------------
+            foreach($taxonomy_terms as $taxonomy_term) {
 
+                // Tag parsing
+                if ($taxonomy_term->taxonomy == 'ld_course_tag') {
+                    $lang_delimiter = 'lang:';
+                    $is_lang_tag = strpos($taxonomy_term->name, $lang_delimiter);
+                    if ($is_lang_tag !== false) {
+                        $tmparr = explode($lang_delimiter, $taxonomy_term->name);
+                        $language = end($tmparr);
+                    }
+                }
 
+                // Category parsing
+                if ($taxonomy_term->taxonomy == 'ld_course_category') {
+                    $categories[] = $taxonomy_term->name;
+                }
+            }
 
+            $data_post['category'] = $categories;
 
-        $b = "c";
+            $data_post['language'] = $language;
+            if ($data_post['language'] === false) {
+                $data_post['language'] = "english";
+            }
+
+            // Description: _sfwd-courses contains the description
+            $legacy_course_options    = get_post_meta( $post->ID, '_sfwd-courses', true );
+            $legacy_short_description = isset( $legacy_course_options['sfwd-courses_course_short_description'] ) ? $legacy_course_options['sfwd-courses_course_short_description'] : '';
+            $data_post['description'] = $legacy_short_description;
+            if (trim($data_post['description']) === "") {
+                $data_post['description'] = false;
+            }
+
+            // Thumbnail:
+            $data_post['image'] = get_the_post_thumbnail_url($post->ID, 'full');
+            if ($data_post['image'] === false) {
+                $data_post['image'] = $plugin_public_dir . 'img/no_image.jpg';
+            }
+
+            $data_all[] = $data_post;
+        }
     }
 
 }
