@@ -196,10 +196,9 @@ class Iswp_Courses_List_Public {
                 $data_post['language'] = false;
             }
 
-            // Description: _sfwd-courses contains the description
-            $legacy_course_options    = get_post_meta( $post->ID, '_sfwd-courses', true );
-            $legacy_short_description = isset( $legacy_course_options['sfwd-courses_course_short_description'] ) ? $legacy_course_options['sfwd-courses_course_short_description'] : '';
-            $data_post['description'] = $legacy_short_description;
+            // Description: _learndash_course_short_description contains the description
+            $short_description = get_post_meta($post->ID, '_learndash_course_short_description', true);
+            $data_post['description'] = $short_description;
             if (trim($data_post['description']) === "") {
                 $data_post['description'] = false;
             }

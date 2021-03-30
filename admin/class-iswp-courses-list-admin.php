@@ -41,6 +41,8 @@ class Iswp_Courses_List_Admin
      */
     private $version;
 
+    private $post_types_affected = ['sfwd-courses']; //, 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz'];
+
     /**
      * Initialize the class and set its properties.
      *
@@ -183,4 +185,105 @@ class Iswp_Courses_List_Admin
         }
     }
 
+    public function add_metabox ()
+    {
+        add_meta_box(
+            'iswp-courses-list__meta_box',
+            'Course List Settings',
+            function () {
+                // Callback won't work otherwise
+                ob_start();
+                $this->iswp_courses_list__output_meta_box();
+                echo ob_get_clean();
+            },
+            $this->post_types_affected,
+            'normal',
+            'high',
+            []
+        );
+    }
+
+    public function iswp_courses_list__output_meta_box()
+    {
+        $post_id = get_the_ID();
+
+        $short_description = get_post_meta( $post_id, '_learndash_course_short_description', true );
+        $short_description = isset($short_description) ? $short_description : "";
+
+        wp_nonce_field('iwspcl_save', 'iswpcl_nonce');
+
+        echo $this->input_structure("Short description","_learndash_course_short_description", $short_description);
+    }
+
+    function input_structure ($title, $key, $value) {
+        $absolute_url = $this->base_url();
+        return <<<EOD
+        <div class="sfwd_input " id="sfwd-courses_{$key}" style="">
+            <span class="sfwd_option_label" style="text-align:right;vertical-align:top;">
+                <a class="sfwd_help_text_link" style="cursor:pointer;" title="Click for Help!" onclick="toggleVisibility('sfwd-courses_tip_$key');">
+                    <img src="{$absolute_url}/wp-content/plugins/sfwd-lms/assets/images/question.png">
+                    <label class="sfwd_label textinput">{$title}</label>
+                </a>
+            </span>
+            <span class="sfwd_option_input">
+                <div class="sfwd_option_div">
+                    <textarea
+                        name="{$key}"
+                          id="{$key}"
+                        rows="2" cols="57">{$value}</textarea>
+                </div>
+                <div class="sfwd_help_text_div" style="display:none" id="sfwd-courses_tip_$key">
+                    <label class="sfwd_help_text">
+                        Enter a short description for this course. 
+                    </label>
+                </div>
+            </span>
+            <p style="clear:left"></p>
+        </div>
+        EOD;
+    }
+
+    function base_url()
+    {
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+            $url = "https://";
+        else
+            $url = "http://";
+
+        // Append the host(domain name, ip) to the URL.
+        $url.= $_SERVER['HTTP_HOST'];
+
+        // Append the requested resource location to the URL
+        //$url.= $_SERVER['REQUEST_URI'];
+
+        return $url;
+    }
+
+
+    function save_metabox ( $post_id, $post, $update )
+    {
+        // Only save for some post types
+        if (!in_array( $post->post_type, $this->post_types_affected)) {
+            return;
+        }
+
+        if ( wp_is_post_revision( $post_id ) ) {
+            return;
+        }
+
+        if ( ! isset( $_POST['iswpcl_nonce'] ) ) {
+            return;
+        }
+
+        if ( ! wp_verify_nonce( $_POST['iswpcl_nonce'], 'iwspcl_save' ) ) {
+            wp_die( __( 'Cheatin\' huh?' ) );
+        }
+
+        update_post_meta(
+            $post_id,
+            '_learndash_course_short_description',
+            wp_filter_kses( $_POST['_learndash_course_short_description'] )
+        );
+
+    }
 }

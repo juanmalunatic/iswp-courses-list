@@ -163,6 +163,10 @@ class Iswp_Courses_List {
         // Save the plugin's page data
         $this->loader->add_action('admin_init', $plugin_admin, 'options_update');
 
+        // Add a metabox
+        $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'add_metabox' );
+        $this->loader->add_action( 'save_post', $plugin_admin, 'save_metabox', 10, 3 );
+
 	}
 
 	/**
