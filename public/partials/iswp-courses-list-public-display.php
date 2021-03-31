@@ -16,14 +16,13 @@
 <div id="iswpcl">
     <div id="iswpcl-toolbar">
         <div id="iswpcl-language-area">
-            <select id="iswpcl-selector-language" class="iswpcl-selector">
-
-            </select>
+            <select id="iswpcl-selector-language" class="iswpcl-selector"></select>
         </div>
         <div id="iswpcl-category-area">
-            <select id="iswpcl-selector-category" class="iswpcl-selector">
-
-            </select>
+            <select id="iswpcl-selector-category" class="iswpcl-selector"></select>
+        </div>
+        <div id="iswpcl-searchbar-area" >
+            <input  id="iswpcl-input-search" type="text" class="iswpcl-searchbar" value="Filter by title" />
         </div>
     </div>
     <div id="iswpcl-cards">
