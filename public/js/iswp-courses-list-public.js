@@ -13,6 +13,9 @@
 function iswpCoursesListSetup() {
 
 	const courses = window.iswpcl_json;
+	if (courses === undefined) {
+		return false;
+	}
 
 	// Initialize select boxes
 	initializeCategories(courses);
