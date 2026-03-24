@@ -218,40 +218,41 @@ class Iswp_Courses_List_Admin
     function input_structure ($title, $key, $value) {
         $absolute_url = $this->base_url();
         return <<<EOD
-        <div class="sfwd_input " id="sfwd-courses_{$key}" style="">
-            <span class="sfwd_option_label" style="text-align:right;vertical-align:top;">
-                <a class="sfwd_help_text_link" style="cursor:pointer;" title="Click for Help!" onclick="toggleVisibility('sfwd-courses_tip_$key');">
-                    <img src="{$absolute_url}/wp-content/plugins/sfwd-lms/assets/images/question.png">
-                    <label class="sfwd_label textinput">{$title}</label>
-                </a>
-            </span>
-            <span class="sfwd_option_input">
-                <div class="sfwd_option_div">
-                    <textarea
-                        name="{$key}"
-                          id="{$key}"
-                        rows="2" cols="57">{$value}</textarea>
-                </div>
-                <div class="sfwd_help_text_div" style="display:none" id="sfwd-courses_tip_$key">
-                    <label class="sfwd_help_text">
-                        Enter a short description for this course. 
-                    </label>
-                </div>
-            </span>
-            <p style="clear:left"></p>
+<div class="sfwd_input " id="sfwd-courses_{$key}" style="">
+    <span class="sfwd_option_label" style="text-align:right;vertical-align:top;">
+        <a class="sfwd_help_text_link" style="cursor:pointer;" title="Click for Help!" onclick="toggleVisibility('sfwd-courses_tip_$key');">
+            <img src="{$absolute_url}/wp-content/plugins/sfwd-lms/assets/images/question.png">
+            <label class="sfwd_label textinput">{$title}</label>
+        </a>
+    </span>
+    <span class="sfwd_option_input">
+        <div class="sfwd_option_div">
+            <textarea
+                name="{$key}"
+                  id="{$key}"
+                rows="2" cols="57">{$value}</textarea>
         </div>
-        EOD;
+        <div class="sfwd_help_text_div" style="display:none" id="sfwd-courses_tip_$key">
+            <label class="sfwd_help_text">
+                Enter a short description for this course. 
+            </label>
+        </div>
+    </span>
+    <p style="clear:left"></p>
+</div>
+EOD;
     }
 
     function base_url()
     {
-        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
             $url = "https://";
-        else
+        } else {
             $url = "http://";
+        }
 
         // Append the host(domain name, ip) to the URL.
-        $url.= $_SERVER['HTTP_HOST'];
+        $url .= $_SERVER['HTTP_HOST'];
 
         // Append the requested resource location to the URL
         //$url.= $_SERVER['REQUEST_URI'];

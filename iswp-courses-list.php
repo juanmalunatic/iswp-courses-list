@@ -8,17 +8,13 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://jmlunalopez.com
  * @since             1.0.0
  * @package           Iswp_Courses_List
  *
  * @wordpress-plugin
  * Plugin Name:       ISWP Courses List
- * Plugin URI:        https://jmlunalopez.com
  * Description:       Display a custom list of LearnDash courses with an advanced UI.
  * Version:           1.0.0
- * Author:            Juan Manuel Luna López
- * Author URI:        https://jmlunalopez.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       iswp-courses-list
