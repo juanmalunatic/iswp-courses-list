@@ -135,19 +135,16 @@ class Iswp_Courses_List_Public {
         // --------------------------------------------------------------------
 
         $options = get_option('iswp_cl__oname__general_settings');
-        $course_ids = explode(', ', $options['course_ids']);
 
-        $result_array = [];
-        foreach ($course_ids as $each_number) {
-            $result_array[] = (int) $each_number;
-        }
+        $course_ids = preg_split('/\s*,\s*/', $options['course_ids']);
+        $result_array = array_map('intval', $course_ids);
+        $result_array = array_filter($result_array);
 
-        // Get the posts
         $query = new WP_Query([
             'post_type' => 'sfwd-courses',
-            'posts_per_page' => 18,
-            'post__in'  => $result_array,
-            'orderby' => 'post_name__in', // Keep the given order
+            'posts_per_page' => -1,
+            'post__in' => $result_array,
+            'orderby' => 'post__in',
             'suppress_filters' => false,
         ]);
         $posts = $query->posts;

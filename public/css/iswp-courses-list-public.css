@@ -120,3 +120,18 @@
     background-size: cover;
     height: 200px;
 }
+
+.iswpcl_card_title .part1{
+    display: block;
+    font-size: 0.9em;
+}
+.iswpcl_card_title .part2{
+    display: block;
+    margin-top: 5px;
+    font-size: 0.7em;
+    color: #555;
+}
+
+.iswpcl_card_description{
+    font-size: 0.7em;
+}

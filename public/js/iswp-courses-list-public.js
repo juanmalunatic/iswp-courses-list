@@ -115,21 +115,27 @@ function createCard(card_data) {
 }
 
 function renderCard(card_data) {
-
 	const title = card_data['title'];
-	const description =	card_data['description'] ? card_data['description'] : '';
+	const description = card_data['description'] ? card_data['description'] : '';
 	const course_url = card_data['link'];
-	const image_url = `url(${card_data['image']}`;
+	const image_url = `url(${card_data['image']})`;
+
+	const parts = title.split(' - ');
+	const part1 = parts.shift() || '';
+	const part2 = parts.length ? parts.join(' - ') : '';
+
+	const formattedTitle = `
+		<span class="part1">${part1}</span>
+		${part2 ? `<span class="part2">${part2}</span>` : ''}
+	`;
 
 	const template = `
 	<div class="iswpcl_card">
 		<a class="iswpcl_card_link" href="${course_url}">
-			<div class="iswpcl_card_image"
-				 style="background-image: ${image_url }) ">	
-			</div>
+			<div class="iswpcl_card_image" style="background-image: ${image_url};"></div>
 			<div class="iswpcl_card_texts">
 				<div class="iswpcl_card_title">
-					${title}
+					${formattedTitle}
 				</div>
 				<div class="iswpcl_card_description">
 					${description}
@@ -141,7 +147,6 @@ function renderCard(card_data) {
 
 	return template;
 }
-
 function filterCourses (courses) {
 
 	// Fetch filter values
